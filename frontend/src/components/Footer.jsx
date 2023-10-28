@@ -4,11 +4,11 @@ const Footer = () => {
 	return (
 		<footer>
 			<Container>
-				<row>
+				<Row>
 					<Col className="text-center py-3">
 						<p>ProShop &copy; {currentYear} </p>
 					</Col>
-				</row>
+				</Row>
 			</Container>
 		</footer>
 	);
