@@ -56,7 +56,7 @@ const ShippingScreen = () => {
 						onChange={(e) => setPostalCode(e.target.value)}
 					></Form.Control>
 				</Form.Group>
-				<Form.Group controlId="postalCode" className="my-2">
+				<Form.Group controlId="country" className="my-2">
 					<Form.Label>Country</Form.Label>
 					<Form.Control
 						type="text"
