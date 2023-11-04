@@ -1,14 +1,6 @@
 import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import {
-	Row,
-	Col,
-	ListGroup,
-	Image,
-	Form,
-	Button,
-	Card,
-} from "react-bootstrap";
+import { Row, Col, ListGroup, Image, Button, Card } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
@@ -18,6 +10,7 @@ import {
 	useGetOrderDetailsQuery,
 	usePayOrderMutation,
 	useGetPayPalClientIdQuery,
+	useDeliverOrderMutation,
 } from "../slices/ordersApiSlice";
 
 const OrderScreen = () => {
@@ -29,6 +22,9 @@ const OrderScreen = () => {
 		error,
 	} = useGetOrderDetailsQuery(orderId);
 	const [payOrder, { iseLoading: loadingPay }] = usePayOrderMutation();
+
+	const [deliverOrder, { isLoading: loadingDeliver }] =
+		useDeliverOrderMutation();
 
 	const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
 	const {
@@ -70,11 +66,11 @@ const OrderScreen = () => {
 			}
 		});
 	}
-	async function onApproveTest() {
+	/*async function onApproveTest() {
 		await payOrder({ orderId, details: { payer: {} } });
 		refetch();
 		toast.success("Payment successful");
-	}
+	}*/
 	function onError(err) {
 		toast.error(err.message);
 	}
@@ -93,6 +89,15 @@ const OrderScreen = () => {
 				return orderId;
 			});
 	}
+	const deliverOrderHandler = async () => {
+		try {
+			await deliverOrder(orderId);
+			refetch();
+			toast.success("Order Deliver");
+		} catch (err) {
+			toast.error(err?.data?.message || err.message);
+		}
+	};
 
 	return isLoading ? (
 		<Loader />
@@ -149,7 +154,10 @@ const OrderScreen = () => {
 										<Col md={1}>
 											<Image src={item.image} alt={item.name} fluid rounded />
 										</Col>
-										<Col>{item.name}</Col>
+										<Col>
+											{" "}
+											<Link to={`/product/${item.product}`}>{item.name}</Link>
+										</Col>
 										<Col md={4}>
 											{item.qty} x ${item.price} = ${item.qty * item.price}
 										</Col>
@@ -207,7 +215,21 @@ const OrderScreen = () => {
 									)}
 								</ListGroup.Item>
 							)}
-							{/* mark as delivered placeholders */}
+							{loadingDeliver && <Loader />}
+							{userInfo &&
+								userInfo.isAdmin &&
+								order.isPaid &&
+								!order.deliverOrder && (
+									<ListGroup.Item>
+										<Button
+											type="button"
+											className="btn btn-block"
+											onClick={deliverOrderHandler}
+										>
+											Mark as Delivered
+										</Button>
+									</ListGroup.Item>
+								)}
 						</ListGroup>
 					</Card>
 				</Col>
