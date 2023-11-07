@@ -15,8 +15,8 @@ const ProductEditScreen = () => {
 	const { id: productId } = useParams();
 
 	const [name, setName] = useState("");
-	const [price, setPrice] = useState("");
-	const [image, setImage] = useState(0);
+	const [price, setPrice] = useState(0);
+	const [image, setImage] = useState("");
 	const [brand, setBrand] = useState("");
 	const [category, setCategory] = useState("");
 	const [countInStock, setCountInStock] = useState(0);

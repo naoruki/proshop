@@ -46,7 +46,7 @@ const destoryData = async () => {
 	}
 };
 if (process.argv[2] === "-d") {
-	destroyData();
+	destoryData();
 } else {
 	importData();
 }
