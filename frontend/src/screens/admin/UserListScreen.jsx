@@ -3,29 +3,58 @@ import { Table, Button } from "react-bootstrap";
 import { FaTimes, FaTrash, FaEdit, FaCheck } from "react-icons/fa";
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import {
 	useGetUsersQuery,
 	useDeleteUserMutation,
 } from "../../slices/usersApiSlice";
+import Swal from "sweetalert2";
 
 const UserListScreen = () => {
 	const { data: users, refetch, isLoading, error } = useGetUsersQuery();
 
 	const [deleteUser, { isLoading: loadingDelete }] = useDeleteUserMutation();
 
+	// const deleteHandler1 = async (id) => {
+	// 	if (window.confirm("Are you sure you want to delete")) {
+	// 		try {
+	// 			await deleteUser(id);
+	// 			toast.success("User Deleted");
+	// 			refetch();
+	// 		} catch (err) {
+	// 			toast.error(err?.data?.message || err.message);
+	// 		}
+	// 	}
+	// };
 	const deleteHandler = async (id) => {
-		if (window.confirm("Are you sure you want to delete")) {
-			try {
-				await deleteUser(id);
-				toast.success("User Deleted");
-				refetch();
-			} catch (err) {
-				toast.error(err?.data?.message || err.message);
+		Swal.fire({
+			title: "Are you sure?",
+			text: "You won't be able to revert this!",
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "Yes, delete it!",
+		}).then(async (result) => {
+			if (result.isConfirmed) {
+				try {
+					await deleteUser(id); // Add your createProduct() function here
+					refetch(); // Add your refetch() function here
+					Swal.fire({
+						title: "Deleted!",
+						text: "Your file has been deleted.",
+						icon: "success",
+					});
+				} catch (err) {
+					Swal.fire({
+						title: "Error!",
+						text: err?.data?.message || err.error,
+						icon: "error",
+					});
+				}
 			}
-		}
+		});
 	};
-
 	return (
 		<>
 			<h1>Users</h1>

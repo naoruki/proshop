@@ -19,16 +19,46 @@ const ProductListScreen = () => {
 	const [deleteProduct, { isLoading: loadingDelete }] =
 		useDeleteProductMutation();
 
+	// const deleteHandler = async (id) => {
+	// 	if (window.confirm("Are you sure you want to delete")) {
+	// 		try {
+	// 			await deleteProduct(id);
+	// 			refetch();
+	// 		} catch (err) {
+	// 			toast.error(err?.data?.message || err.error);
+	// 		}
+	// 	}
+	// };
 	const deleteHandler = async (id) => {
-		if (window.confirm("Are you sure you want to delete")) {
-			try {
-				await deleteProduct(id);
-				refetch();
-			} catch (err) {
-				toast.error(err?.data?.message || err.error);
+		Swal.fire({
+			title: "Are you sure?",
+			text: "You won't be able to revert this!",
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "Yes, delete it!",
+		}).then(async (result) => {
+			if (result.isConfirmed) {
+				try {
+					await deleteProduct(id); // Add your createProduct() function here
+					refetch(); // Add your refetch() function here
+					Swal.fire({
+						title: "Deleted!",
+						text: "Your file has been deleted.",
+						icon: "success",
+					});
+				} catch (err) {
+					Swal.fire({
+						title: "Error!",
+						text: err?.data?.message || err.error,
+						icon: "error",
+					});
+				}
 			}
-		}
+		});
 	};
+
 	const createProductHandler = async () => {
 		if (window.confirm("Are you sure you want to create a new product?")) {
 			try {
