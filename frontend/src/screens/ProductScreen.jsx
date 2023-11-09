@@ -75,7 +75,7 @@ const ProductScreen = () => {
 				</Message>
 			) : (
 				<>
-					<Meta title={product.name} />
+					{/* <Meta title={product.name} /> */}
 					<Link className="btn btn-light my-3" to="/">
 						Go Back
 					</Link>
