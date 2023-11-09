@@ -3,17 +3,19 @@ import Product from "../models/productModel.js";
 //@desc Fetch all products
 //@route GET /api/products
 //@access public
-const getProducts = asyncHandler(async (req, res, next) => {
-	const pageSize = 4;
+const getProducts = asyncHandler(async (req, res) => {
+	const pageSize = 8;
 	const page = Number(req.query.pageNumber) || 1;
-	const count = await Product.countDocuments();
+	//search for products
+	const keyword = req.query.keyword
+		? { name: { $regex: req.query.keyword, $options: "i" } }
+		: {};
+	const count = await Product.countDocuments({ ...keyword });
 
-	const products = await Product.find({})
+	const products = await Product.find({ ...keyword })
 		.limit(pageSize)
 		.skip(pageSize * (page - 1));
 	res.json({ products, page, pages: Math.ceil(count / pageSize) });
-	
-
 });
 //@desc Fetch a products
 //@route GET /api/products/:id
