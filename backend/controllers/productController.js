@@ -118,6 +118,14 @@ const { rating, comment } = req.body;
 	}
 });
 
+//@desc Get top rated products
+//@route GET /api/products/top
+//@access public
+const getTopProducts = asyncHandler(async (req, res, next) => {
+	const products = await Product.find({}).sort ({rating: -1}).limit(3);
+	res.status(200).json(products);
+});
+
 export {
 	getProducts,
 	getProductByID,
@@ -125,4 +133,5 @@ export {
 	updateProduct,
 	deleteProduct,
 	createProductReview,
+	getTopProducts,
 };
